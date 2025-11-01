@@ -13,6 +13,9 @@ import qrcode
 from authlib.oauth2.rfc6749 import grants
 from authlib.oauth2.rfc6750 import BearerTokenValidator
 
+# Disable HTTPS check for production (Railway handles SSL at proxy)
+os.environ['AUTHLIB_INSECURE_TRANSPORT'] = '1'
+
 app = Flask(
     __name__,
     instance_path='/tmp',
