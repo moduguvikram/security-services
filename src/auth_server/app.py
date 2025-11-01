@@ -77,13 +77,15 @@ def register_user():
         name=username, issuer_name="ThisOAuthServer"
     )
     img = qrcode.make(otp_uri)
-    filename = f"{username}_otp.png"
-    path = os.path.join("static/qrcodes", filename)
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    img.save(path)
+    
+    # Convert QR code to base64
+    from io import BytesIO
+    import base64
+    buffer = BytesIO()
+    img.save(buffer, format='PNG')
+    qr_base64 = base64.b64encode(buffer.getvalue()).decode()
 
-    print(otp_uri)
-    return jsonify(message="User registered", otp_uri=otp_uri)
+    return jsonify(message="User registered", otp_uri=otp_uri, qr_code=qr_base64)
 
 @app.route("/verify_otp", methods=["POST"])
 def verify_otp():
