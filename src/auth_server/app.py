@@ -6,19 +6,20 @@ from authlib.integrations.flask_oauth2 import AuthorizationServer, ResourceProte
 from authlib.integrations.sqla_oauth2 import create_query_client_func, create_save_token_func, create_bearer_token_validator
 from werkzeug.security import gen_salt
 from werkzeug.security import generate_password_hash, check_password_hash
-from models import db, User, OAuth2Client, OAuth2Token
+from .models import db, User, OAuth2Client, OAuth2Token
 import pyotp
 import qrcode
 
 from authlib.oauth2.rfc6749 import grants
 from authlib.oauth2.rfc6750 import BearerTokenValidator
+
 app = Flask(
     __name__,
     instance_path='/tmp',
     instance_relative_config=True
-    )
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////tmp/dev.db"
-app.config["SECRET_KEY"] = "super-secret-change-me"
+)
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL", "sqlite:////tmp/dev.db")
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "super-secret-change-me")
 app.config["OAUTH2_REFRESH_TOKEN_GENERATOR"] = True
 db.init_app(app)
 
@@ -174,4 +175,9 @@ def profile():
 # ------------------------------------------------------------
 
 if __name__ == "__main__":
-    app.run(debug=True, ssl_context="adhoc")
+    port = int(os.getenv("PORT", 5000))
+    debug = os.getenv("FLASK_ENV") == "development"
+    if debug:
+        app.run(debug=True, ssl_context="adhoc", port=port)
+    else:
+        app.run(host="0.0.0.0", port=port, debug=False)
