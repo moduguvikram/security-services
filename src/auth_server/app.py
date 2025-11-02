@@ -53,7 +53,7 @@ with app.app_context():
     db.create_all()
 
 # Swagger UI setup
-SWAGGER_URL = '/'
+SWAGGER_URL = '/docs'
 API_URL = '/static/swagger.json'
 swaggerui_blueprint = get_swaggerui_blueprint(
     SWAGGER_URL,
@@ -61,6 +61,22 @@ swaggerui_blueprint = get_swaggerui_blueprint(
     config={'app_name': "OAuth2 Server with OTP"}
 )
 app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
+
+@app.route('/')
+def home():
+    return jsonify({
+        "message": "OAuth2 Server with OTP Authentication",
+        "version": "1.0.0",
+        "documentation": f"{request.host_url}docs",
+        "endpoints": {
+            "register_user": "/register_user",
+            "verify_otp": "/verify_otp",
+            "qr_code": "/qr_code/<username>",
+            "create_client": "/create_client",
+            "token": "/token",
+            "profile": "/profile"
+        }
+    })
 
 @app.route('/static/swagger.json')
 def swagger_spec():
