@@ -1,14 +1,22 @@
 import sys
 import os
-from flask import Flask, request, jsonify, redirect, session
+
+# Add parent directory to path for imports
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from flask import Flask, request, jsonify, redirect, session, send_file
 from flask_sqlalchemy import SQLAlchemy
 from authlib.integrations.flask_oauth2 import AuthorizationServer, ResourceProtector, current_token
 from authlib.integrations.sqla_oauth2 import create_query_client_func, create_save_token_func, create_bearer_token_validator
 from werkzeug.security import gen_salt
 from werkzeug.security import generate_password_hash, check_password_hash
-from .models import db, User, OAuth2Client, OAuth2Token
 import pyotp
 import qrcode
+
+try:
+    from .models import db, User, OAuth2Client, OAuth2Token
+except ImportError:
+    from models import db, User, OAuth2Client, OAuth2Token
 
 from authlib.oauth2.rfc6749 import grants
 from authlib.oauth2.rfc6750 import BearerTokenValidator
@@ -81,16 +89,28 @@ def register_user():
     otp_uri = pyotp.TOTP(otp_secret).provisioning_uri(
         name=username, issuer_name="ThisOAuthServer"
     )
+    
+    qr_code_url = f"{request.host_url}qr_code/{username}"
+    
+    return jsonify(message="User registered", otp_uri=otp_uri, qr_code_url=qr_code_url)
+
+@app.route("/qr_code/<username>")
+def get_qr_code(username):
+    user = User.query.filter_by(username=username).first()
+    if not user or not user.otp_secret:
+        return jsonify(error="User not found"), 404
+    
+    otp_uri = pyotp.TOTP(user.otp_secret).provisioning_uri(
+        name=username, issuer_name="ThisOAuthServer"
+    )
     img = qrcode.make(otp_uri)
     
-    # Convert QR code to base64
     from io import BytesIO
-    import base64
     buffer = BytesIO()
     img.save(buffer, format='PNG')
-    qr_base64 = base64.b64encode(buffer.getvalue()).decode()
-
-    return jsonify(message="User registered", otp_uri=otp_uri, qr_code=qr_base64)
+    buffer.seek(0)
+    
+    return send_file(buffer, mimetype='image/png')
 
 @app.route("/verify_otp", methods=["POST"])
 def verify_otp():

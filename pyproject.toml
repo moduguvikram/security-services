@@ -1,9 +1,13 @@
 [tool.poetry]
-name = "security-services"
-version = "0.1.0"
-description = ""
+name = "oauth2-otp-server"
+version = "1.0.0"
+description = "OAuth2 Authorization Server with TOTP Authentication"
 authors = ["Your Name <you@example.com>"]
 readme = "README.md"
+license = "MIT"
+homepage = "https://github.com/moduguvikram/security-services"
+repository = "https://github.com/moduguvikram/security-services"
+keywords = ["oauth2", "authentication", "otp", "totp", "flask", "authlib"]
 package-mode = false
 
 [tool.poetry.dependencies]
