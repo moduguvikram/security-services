@@ -112,6 +112,13 @@ def create_client():
     data = request.json
     client_name = data.get("client_name")
     redirect_uri = data.get("redirect_uri")
+    grant_types = data.get("grant_types", ["client_credentials", "authorization_code", "password"])
+    scope = data.get("scope", "profile email")
+
+    # Check if client name already exists
+    existing = OAuth2Client.query.filter_by(client_name=client_name).first()
+    if existing:
+        return jsonify(error="Client name already exists"), 400
 
     client_id = gen_salt(24)
     client_secret = gen_salt(48)
@@ -119,15 +126,16 @@ def create_client():
     client_metadata = {
         "client_name": client_name,
         "client_uri": redirect_uri,
-        "grant_types": ["client_credentials", "authorization_code", "password"],
+        "grant_types": grant_types,
         "response_types": ["code"],
         "redirect_uris": [redirect_uri],
-        "scope": "profile email",
+        "scope": scope,
     }
     
     client = OAuth2Client(
         client_id=client_id,
-        client_secret=client_secret
+        client_secret=client_secret,
+        client_name=client_name
     )
     client.set_client_metadata(client_metadata)
     db.session.add(client)
@@ -146,6 +154,7 @@ class PasswordGrant(grants.ResourceOwnerPasswordCredentialsGrant):
         user = User.query.filter_by(username=username).first()
         if user and check_password_hash(user.password, password) and user.otp_verified:
             return user
+        return None
 
 authorization.register_grant(PasswordGrant)
 authorization.register_grant(grants.ClientCredentialsGrant)

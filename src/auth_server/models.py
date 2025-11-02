@@ -20,6 +20,7 @@ class OAuth2Client(db.Model, OAuth2ClientMixin):
     client_secret = db.Column(db.String(120), nullable=False)
     client_id_issued_at = db.Column(db.Integer, nullable=False, default=0)
     client_secret_expires_at = db.Column(db.Integer, nullable=False, default=0)
+    client_name = db.Column(db.String(120), unique=True, nullable=True)
 
 class OAuth2Token(db.Model, OAuth2TokenMixin):
     id = db.Column(db.Integer, primary_key=True)
