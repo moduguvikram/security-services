@@ -6,6 +6,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from flask import Flask, request, jsonify, redirect, session, send_file
 from flask_sqlalchemy import SQLAlchemy
+from flask_swagger_ui import get_swaggerui_blueprint
 from authlib.integrations.flask_oauth2 import AuthorizationServer, ResourceProtector, current_token
 from authlib.integrations.sqla_oauth2 import create_query_client_func, create_save_token_func, create_bearer_token_validator
 from werkzeug.security import gen_salt
@@ -50,6 +51,20 @@ class MyBearerTokenValidator(BearerTokenValidator):
 
 with app.app_context():
     db.create_all()
+
+# Swagger UI setup
+SWAGGER_URL = '/'
+API_URL = '/static/swagger.json'
+swaggerui_blueprint = get_swaggerui_blueprint(
+    SWAGGER_URL,
+    API_URL,
+    config={'app_name': "OAuth2 Server with OTP"}
+)
+app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
+
+@app.route('/static/swagger.json')
+def swagger_spec():
+    return send_file(os.path.join(os.path.dirname(__file__), 'swagger.json'))
 
 # OAuth2 setup
 query_client = create_query_client_func(db.session, OAuth2Client)
