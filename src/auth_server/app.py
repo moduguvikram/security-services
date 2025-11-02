@@ -23,7 +23,9 @@ app = Flask(
 )
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL", "sqlite:////tmp/dev.db")
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "super-secret-change-me")
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["OAUTH2_REFRESH_TOKEN_GENERATOR"] = True
+app.config["OAUTH2_TOKEN_EXPIRES_IN"] = {"authorization_code": 864000, "implicit": 3600, "password": 864000, "client_credentials": 864000}
 db.init_app(app)
 
 class MyBearerTokenValidator(BearerTokenValidator):
@@ -39,7 +41,6 @@ class MyBearerTokenValidator(BearerTokenValidator):
 
 
 with app.app_context():
-    db.drop_all()
     db.create_all()
 
 # OAuth2 setup
@@ -61,6 +62,10 @@ def register_user():
     data = request.json
     username = data.get("username")
     password = data.get("password")
+    
+    if not username or not password:
+        return jsonify(error="Username and password are required"), 400
+    
     if User.query.filter_by(username=username).first():
         return jsonify(error="User already exists"), 400
 
@@ -114,6 +119,9 @@ def create_client():
     redirect_uri = data.get("redirect_uri")
     grant_types = data.get("grant_types", ["client_credentials", "authorization_code", "password"])
     scope = data.get("scope", "profile email")
+    
+    if not client_name or not redirect_uri:
+        return jsonify(error="Client name and redirect URI are required"), 400
 
     # Check if client name already exists
     existing = OAuth2Client.query.filter_by(client_name=client_name).first()
