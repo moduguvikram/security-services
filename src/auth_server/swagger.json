@@ -7,8 +7,8 @@
   },
   "servers": [
     {
-      "url": "https://127.0.0.1:5000",
-      "description": "Local development server"
+      "url": "/",
+      "description": "Current server"
     }
   ],
   "paths": {
