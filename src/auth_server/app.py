@@ -115,22 +115,24 @@ def create_client():
 
     client_id = gen_salt(24)
     client_secret = gen_salt(48)
+    
+    client_metadata = {
+        "client_name": client_name,
+        "client_uri": redirect_uri,
+        "grant_types": ["client_credentials", "authorization_code", "password"],
+        "response_types": ["code"],
+        "redirect_uris": [redirect_uri],
+        "scope": "profile email",
+    }
+    
     client = OAuth2Client(
         client_id=client_id,
-        client_secret=client_secret,
-        
+        client_secret=client_secret
     )
-    client_metadata={
-            "client_name": client_name,
-            "client_uri": redirect_uri,
-            "grant_types": ["client_credentials", "authorization_code", "password"],
-            "response_types": ["code"],
-            "redirect_uris": [redirect_uri],
-            "scope": "profile email",
-        }
     client.set_client_metadata(client_metadata)
     db.session.add(client)
     db.session.commit()
+    
     return jsonify(client_id=client_id, client_secret=client_secret)
 
 # ------------------------------------------------------------
