@@ -5,6 +5,12 @@
 
 A production-ready OAuth2 authorization server with Time-based One-Time Password (TOTP) authentication built with Flask and Authlib.
 
+## Live Demo
+
+🌐 **API Documentation:** https://web-production-7a862.up.railway.app/docs/
+
+Try the interactive API documentation and test all endpoints directly in your browser.
+
 ## Features
 
 - 🔐 OAuth2 Authorization Server (RFC 6749)
@@ -47,13 +53,17 @@ export FLASK_ENV=development
 poetry run python3 src/auth_server/app.py
 ```
 
-Server runs at: `https://127.0.0.1:5000`
+Server runs at: `https://127.0.0.1:5001`
 
 ### Production Deployment
 
 See [Deployment Guide](#deployment) below.
 
 ## API Documentation
+
+**Interactive Documentation:** https://web-production-7a862.up.railway.app/docs/
+
+All examples below use local development URLs. Replace `https://127.0.0.1:5001` with `https://web-production-7a862.up.railway.app` for production.
 
 ### 1. Register a User
 
