@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 
-A production-ready OAuth2 authorization server with Time-based One-Time Password (TOTP) authentication built with Flask and Authlib.
+An OAuth2 authorization server with Time-based One-Time Password (TOTP) authentication built with Flask and Authlib.
 
 ## Live Demo
 
