@@ -13,6 +13,37 @@ Production-ready OAuth2 & 2FA (TOTP) server built with Flask — ideal for acade
 
 Try the interactive API documentation and test all endpoints directly in your browser.
 
+## Quick Preview
+
+### Authentication Flow
+
+```
+┌─────────────┐      ┌──────────────┐      ┌─────────────┐
+│   Register  │─────▶│   QR Code    │─────▶│   Verify    │
+│    User     │      │   (TOTP)     │      │     OTP     │
+└─────────────┘      └──────────────┘      └─────────────┘
+                            │
+                            ▼
+                     ┌──────────────┐
+                     │    Scan in   │
+                     │ Authenticator│
+                     └──────────────┘
+                            │
+                            ▼
+                     ┌──────────────┐
+                     │  Get OAuth2  │
+                     │    Token     │
+                     └──────────────┘
+```
+
+### Screenshots
+
+![Swagger UI](docs/images/swagger-ui.png)
+*Interactive API Documentation with Swagger UI*
+
+![QR Code](docs/images/qr-code-image.png)
+*QR Code for TOTP Authentication*
+
 ## Features
 
 - 🔐 OAuth2 Authorization Server (RFC 6749)
