@@ -1,5 +1,7 @@
 # OAuth2 Server with OTP Authentication
 
+# Security Services - Academic OAuth2 & 2FA Server
+[![Live Demo](https://img.shields.io/badge/Demo-Live-green?style=for-the-badge&logo=rocket)](https://web-production-7a862.up.railway.app/docs/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 
