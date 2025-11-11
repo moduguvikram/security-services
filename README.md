@@ -5,9 +5,11 @@
 
 An OAuth2 authorization server with Time-based One-Time Password (TOTP) authentication built with Flask and Authlib.
 
+Production-ready OAuth2 & 2FA (TOTP) server built with Flask — ideal for academic and ed-tech systems.
+
 ## Live Demo
 
-🌐 **API Documentation:** https://web-production-7a862.up.railway.app/docs/
+🌐 **Live Demonstration:** https://web-production-7a862.up.railway.app/docs/
 
 Try the interactive API documentation and test all endpoints directly in your browser.
 
